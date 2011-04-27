@@ -1,18 +1,20 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from rk import RK_Solver
+from euler import Implicit_Euler
 from math import exp,log
 
 euler = RK_Solver(None,[1],None)
 heun = RK_Solver([[1]],[0.5,0.5],[0,1])
 rk4 = RK_Solver([[0.5],[0,0.5],[0,0,1]],[1./6.,1./3.,1./3.,1./6.],[0.0,0.5,0.5,1])
+implicit_euler = Implicit_Euler()
 
 # Aufgabe 1
 f = lambda x,y:-2*x*y*y
 exact = lambda x: 1./(1+x*x)
 x0 = 0
 y0 = 1
-emax = dict(((euler,{}),(heun,{}),(rk4,{})))
+emax = dict(((euler,{}),(heun,{}),(rk4,{}),(implicit_euler,{})))
 
 for h in [0.1,0.01,0.001,0.0001]:
     N = int(1/h)
@@ -90,13 +92,13 @@ f = lambda x,y:-1000*y
 exact = lambda x: exp(-1000*x)
 x0 = 0
 y0 = 1
-emax = dict(((euler,{}),(heun,{}),(rk4,{})))
+emax = dict(((euler,{}),(heun,{}),(rk4,{}),(implicit_euler,{})))
 
 for h in [0.1,0.01,0.001,0.0001]:
     N = int(1/h)
     xx = [x0+n*h for n in xrange(N+1)]
 
-    for s in [euler, heun, rk4]:
+    for s in [euler, heun, rk4, implicit_euler]:
         s.solve(f,x0,y0,h,N,exact)
         emax[s][h] = max(abs(d) for d in s.deltas)
 
@@ -108,7 +110,7 @@ set xlabel "x"
 set ylabel "y"
 
 set title 'Aufgabe1 - Results for h = """ + str(h) + """'
-plot '-' with lines title "Exact", '-' with lines title 'Euler', '-' with lines title "Heun", '-' with lines title "Runge-Kutta(4)" """
+plot '-' with lines title "Exact", '-' with lines title 'Euler', '-' with lines title "Heun", '-' with lines title "Runge-Kutta(4)", '-' with lines title "Implicit Euler" """
     for i in xrange(N+1):
         print xx[i], exact(xx[i])
     print "e"
@@ -121,11 +123,14 @@ plot '-' with lines title "Exact", '-' with lines title 'Euler', '-' with lines 
     for i in xrange(N+1):
         print xx[i], rk4.results[i]
     print "e"
+    for i in xrange(N+1):
+        print xx[i], implicit_euler.results[i]
+    print "e"
 
     print """
 set title 'Aufgabe 2 - Errors for h = """ + str(h) + """'
 set ylabel "{/Symbol D}y"
-plot '-' with lines title 'Euler', '-' with lines title "Heun", '-' with lines title "Runge-Kutta(4)" """
+plot '-' with lines title 'Euler', '-' with lines title "Heun", '-' with lines title "Runge-Kutta(4)", '-' with lines title "Implicit Euler" """
     for i in xrange(N+1):
         print xx[i], euler.deltas[i]
     print "e"
@@ -134,6 +139,9 @@ plot '-' with lines title 'Euler', '-' with lines title "Heun", '-' with lines t
     print "e"
     for i in xrange(N+1):
         print xx[i], rk4.deltas[i]
+    print "e"
+    for i in xrange(N+1):
+        print xx[i], implicit_euler.deltas[i]
     print "e"
 
     print """
@@ -150,7 +158,7 @@ set title "Aufgabe 2 - Maximum Errors"
 set xlabel "log(1/h)"
 set ylabel "log(max(abs({/Symbol D}y)))"
 
-plot '-' with points title "Euler", '-' with points title "Heun", '-' with points title "Runge-Kutta(4)" """
+plot '-' with points title "Euler", '-' with points title "Heun", '-' with points title "Runge-Kutta(4)", '-' with points title "Implicit Euler" """
 for h,e in sorted(emax[euler].iteritems()):
     print log(1/h), log(e)
 print "e"
@@ -158,6 +166,9 @@ for h,e in sorted(emax[heun].iteritems()):
     print log(1/h), log(e)
 print "e"
 for h,e in sorted(emax[rk4].iteritems()):
+    print log(1/h), log(e)
+print "e"
+for h,e in sorted(emax[implicit_euler].iteritems()):
     print log(1/h), log(e)
 print "e"
 
