@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 from rk import RK_Solver
 from math import exp,log
 
