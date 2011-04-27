@@ -90,6 +90,7 @@ f = lambda x,y:-1000*y
 exact = lambda x: exp(-1000*x)
 x0 = 0
 y0 = 1
+emax = dict(((euler,{}),(heun,{}),(rk4,{})))
 
 for h in [0.1,0.01,0.001,0.0001]:
     N = int(1/h)
