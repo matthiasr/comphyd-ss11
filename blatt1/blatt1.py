@@ -22,9 +22,12 @@ for h in [0.1,0.01,0.001,0.0001]:
         s.solve(f,x0,y0,h,N,exact)
         emax[s][h] = max(abs(d) for d in s.deltas)
 
-    print """set term 'pdf' size 21cm,29.7cm
+    print """set term 'pdf' size 21cm,29.7cm enhanced
 set output 'aufgabe1-""" + str(h) + """.pdf'
 set multiplot layout 2,1
+
+set xlabel "x"
+set ylabel "y"
 
 set title 'Aufgabe1 - Results for h = """ + str(h) + """'
 plot '-' with lines title "Exact", '-' with lines title 'Euler', '-' with lines title "Heun", '-' with lines title "Runge-Kutta(4)" """
@@ -43,6 +46,7 @@ plot '-' with lines title "Exact", '-' with lines title 'Euler', '-' with lines 
 
     print """
 set title 'Aufgabe 1 - Errors for h = """ + str(h) + """'
+set ylabel "{/Symbol D}y"
 plot '-' with lines title 'Euler', '-' with lines title "Heun", '-' with lines title "Runge-Kutta(4)" """
     for i in xrange(N+1):
         print xx[i], euler.deltas[i]
@@ -61,12 +65,12 @@ unset multiplot
 unset output
 """
 
-print """set term pdf size 29.7cm,21cm
+print """set term pdf size 29.7cm,21cm enhanced
 set output "aufgabe1-errors.pdf"
 set title "Aufgabe 1 - Maximum Errors"
 
 set xlabel "log(1/h)"
-set ylabel "max(abs(\Delta y))"
+set ylabel "log(max(abs({/Symbol D}y)))"
 
 plot '-' with points title "Euler", '-' with points title "Heun", '-' with points title "Runge-Kutta(4)" """
 for h,e in sorted(emax[euler].iteritems()):
