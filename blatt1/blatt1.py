@@ -91,3 +91,74 @@ exact = lambda x: exp(-1000*x)
 x0 = 0
 y0 = 1
 
+for h in [0.1,0.01,0.001,0.0001]:
+    N = int(1/h)
+    xx = [x0+n*h for n in xrange(N+1)]
+
+    for s in [euler, heun, rk4]:
+        s.solve(f,x0,y0,h,N,exact)
+        emax[s][h] = max(abs(d) for d in s.deltas)
+
+    print """set term 'pdf' size 21cm,29.7cm enhanced
+set output 'aufgabe2-""" + str(h) + """.pdf'
+set multiplot layout 2,1
+
+set xlabel "x"
+set ylabel "y"
+
+set title 'Aufgabe1 - Results for h = """ + str(h) + """'
+plot '-' with lines title "Exact", '-' with lines title 'Euler', '-' with lines title "Heun", '-' with lines title "Runge-Kutta(4)" """
+    for i in xrange(N+1):
+        print xx[i], exact(xx[i])
+    print "e"
+    for i in xrange(N+1):
+        print xx[i], euler.results[i]
+    print "e"
+    for i in xrange(N+1):
+        print xx[i], heun.results[i]
+    print "e"
+    for i in xrange(N+1):
+        print xx[i], rk4.results[i]
+    print "e"
+
+    print """
+set title 'Aufgabe 2 - Errors for h = """ + str(h) + """'
+set ylabel "{/Symbol D}y"
+plot '-' with lines title 'Euler', '-' with lines title "Heun", '-' with lines title "Runge-Kutta(4)" """
+    for i in xrange(N+1):
+        print xx[i], euler.deltas[i]
+    print "e"
+    for i in xrange(N+1):
+        print xx[i], heun.deltas[i]
+    print "e"
+    for i in xrange(N+1):
+        print xx[i], rk4.deltas[i]
+    print "e"
+
+    print """
+
+
+unset multiplot
+unset output
+"""
+
+print """set term pdf size 29.7cm,21cm enhanced
+set output "aufgabe2-errors.pdf"
+set title "Aufgabe 2 - Maximum Errors"
+
+set xlabel "log(1/h)"
+set ylabel "log(max(abs({/Symbol D}y)))"
+
+plot '-' with points title "Euler", '-' with points title "Heun", '-' with points title "Runge-Kutta(4)" """
+for h,e in sorted(emax[euler].iteritems()):
+    print log(1/h), log(e)
+print "e"
+for h,e in sorted(emax[heun].iteritems()):
+    print log(1/h), log(e)
+print "e"
+for h,e in sorted(emax[rk4].iteritems()):
+    print log(1/h), log(e)
+print "e"
+
+print """unset output"""
+
