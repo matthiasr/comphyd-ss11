@@ -6,7 +6,7 @@ PDFS= aufgabe1-0.0001.pdf aufgabe1-0.001.pdf aufgabe1-0.01.pdf aufgabe1-0.1.pdf 
 all: $(PDFS)
 
 $(PDFS): blatt1.py
-	$(PYTHON) $< | $(GNUPLOT)
+	$(PYTHON) blatt1.py | $(GNUPLOT)
 
 .PHONY: clean
 
