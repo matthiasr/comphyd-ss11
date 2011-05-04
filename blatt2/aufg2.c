@@ -48,8 +48,8 @@ void makeimage(char* fname) {
 }
 
 void usage(char* progname) {
-    printf("Usage:"
-            "\t%s <filename>\tgenerate image and save in PNG format"
+    printf("Usage:\n"
+            "\t%s <filename>\tgenerate image and save in PNG format\n"
             "\t%s x y\tprint root and number of iterations for starting point x+yI\n", \
             progname, progname);
     exit(1);
