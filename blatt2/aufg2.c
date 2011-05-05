@@ -81,7 +81,7 @@ void makeimage(char* fname) {
     for(i=0;i<SIZE;i++) {
         for(j=0;j<SIZE;j++) {
             r = newton(f, f_deriv, \
-                    ((10./(double)SIZE)*i - 5.0) + \
+                    ((10./(double)SIZE)*j - 5.0) + \
                     I*((10./(double)SIZE)*i - 5.0));
             if(r.iterations == -1) {
                 c = 0;
