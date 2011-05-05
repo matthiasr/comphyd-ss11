@@ -66,7 +66,7 @@ void makeimage(char* fname) {
 
     png_bytep data = (png_bytep) malloc(3*SIZE*SIZE*sizeof(png_byte)); assert(data!=NULL);
 
-    unsigned int i, j, c;
+    int i, j, c;
     struct newton_result r;
     double complex zeros[3];
     zeros[0] = 1;
@@ -77,7 +77,7 @@ void makeimage(char* fname) {
     const png_byte B[4] = {255, 0, 0, 255};
 
 
-#pragma omp parallel for private(i,j,r,c) shared(data,zeros,R,G,B)
+#pragma omp parallel for private(i,j,r,c) shared(data,zeros)
     for(i=0;i<SIZE;i++) {
         for(j=0;j<SIZE;j++) {
             r = newton(f, f_deriv, \
