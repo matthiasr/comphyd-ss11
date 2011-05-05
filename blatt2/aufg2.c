@@ -63,22 +63,21 @@ void makeimage(char* fname) {
     png_set_IHDR(pict, info, SIZE, SIZE, \
          8, PNG_COLOR_TYPE_RGB, PNG_INTERLACE_NONE, \
          PNG_COMPRESSION_TYPE_BASE, PNG_FILTER_TYPE_BASE);
+    png_write_info(pict,info);
 
-    png_bytep data = (png_bytep) malloc(3*SIZE*SIZE*sizeof(png_byte)); assert(data!=NULL);
+    png_bytep data;
 
     int i, j, c;
     struct newton_result r;
-    double complex zeros[3];
-    zeros[0] = 1;
-    zeros[1] = cexp(2.*M_PI*I/3.);
-    zeros[2] = cexp(4.*M_PI*I/3.);
+    double complex zeros[3] = { 1, cexp(2.*M_PI*I/3.), cexp(4.*M_PI*I/3.) };
     const png_byte R[4] = {255, 0, 255, 0};
     const png_byte G[4] = {255, 255, 0, 0};
     const png_byte B[4] = {255, 0, 0, 255};
 
 
-#pragma omp parallel for private(i,j,r,c) shared(data,zeros)
+#pragma omp parallel for ordered private(i,j,r,c,data) shared(pict)
     for(i=0;i<SIZE;i++) {
+        data = (png_bytep) malloc(3*SIZE*sizeof(png_byte)); assert(data!=NULL);
         for(j=0;j<SIZE;j++) {
             r = newton(f, f_deriv, \
                     ((10./(double)SIZE)*j - 5.0) + \
@@ -96,23 +95,18 @@ void makeimage(char* fname) {
                 c = 0;
             }
 
-        data[(i*SIZE+j)*3] = R[c];
-        data[(i*SIZE+j)*3+1] = G[c];
-        data[(i*SIZE+j)*3+2] = B[c];
+        data[j*3] = R[c];
+        data[j*3+1] = G[c];
+        data[j*3+2] = B[c];
 
         }
-    }
-
-    png_write_info(pict,info);
-
-    for(i=0;i<SIZE;i++) {
-        png_write_row(pict, data+3*SIZE*i);
+#pragma omp ordered
+        png_write_row(pict, data);
+        free(data); data = NULL;
     }
 
     png_write_end(pict,info);
     png_destroy_write_struct(&pict,&info);
-
-    free(data); data = NULL;
 }
 
 void usage(char* progname) {
