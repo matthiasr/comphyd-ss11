@@ -18,7 +18,7 @@ double complex f(double complex z) {
 }
 
 double complex f_deriv(double complex z) {
-    return 3*z;
+    return 3*z*z;
 }
 
 struct newton_result {
