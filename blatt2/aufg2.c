@@ -11,7 +11,7 @@
 
 #define SMALL 1E-12
 #define BIG (1./SMALL)
-#define SIZE 501
+#define SIZE 8000
 
 double complex f(double complex z) {
     return z*z*z - 1;
